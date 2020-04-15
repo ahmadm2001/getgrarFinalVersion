@@ -6,6 +6,7 @@ public class Manager {
     private  Boolean yes;
     private String name, Phone,numbercar ,Towinglicense ,uid,email;
    // private ImageView pic;
+    public Manager (){}
     public Manager(String Fullname, String phone, String email, String Towinglicense,String numbercar ,String uid, Boolean yes) {
         this.name = Fullname;
         this.yes = yes;

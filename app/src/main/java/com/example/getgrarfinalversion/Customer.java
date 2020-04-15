@@ -1,17 +1,17 @@
 package com.example.getgrarfinalversion;
 
 public class Customer {
-    private String name, Phone, TypeCar,numbercar, uid,email;
-    private boolean isCustomer;
+    private String name, Phone,email, TypeCar,numbercar, uid;
+    Boolean inorder;
     public Customer(){}
-    public Customer(String Name, String Phone, String Numbercar, String typeCar, String uid ,String email){
-        this.name=Name;
-        this.TypeCar=typeCar;
+    public Customer(String Name, String Phone,String email, String typeCar, String Numbercar, String uid ,Boolean inorder){
+            this.name=Name;
+            this.TypeCar=typeCar;
         this.numbercar=Numbercar;
         this.Phone=Phone;
-        //this.Pic=Pic;
+        this.inorder=inorder;
         this.uid=uid;
-        this.isCustomer=isCustomer;
+        this.email=email;
     }
 
 
@@ -40,13 +40,13 @@ public class Customer {
         Phone = phone;
     }
 
-   /* public String getPic() {
-        return Pic;
+    public String getEmail() {
+        return email;
     }
 
-    public void setPic(String pic) {
-        Pic = pic;
-    }*/
+    public void setEmail(String email) {
+        email = email;
+    }
 
     public String getTypeCar() {
         return TypeCar;
@@ -64,10 +64,20 @@ public class Customer {
         this.uid = uid;
     }
 
-    public boolean getisCustomer() {
-        return isCustomer;
+    public Boolean getinorder(){
+        return inorder;
     }
-    public void setCustomer(){
-        this.isCustomer=isCustomer;
+
+    public void setInorder(boolean inorder) {
+        this.inorder = inorder;
     }
+    /*public void copyCustomer(Customer customer){
+        this.name=customer.getName();
+        this.Phone=customer.getPhone();
+        this.email=customer.getEmail();
+        this.numbercar=customer.getNumbercar();
+        this.TypeCar=customer.getTypeCar();
+        this.uid=customer.getUid();
+    }*/
+
 }

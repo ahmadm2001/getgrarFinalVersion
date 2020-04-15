@@ -7,10 +7,20 @@
     tools:context=".WelcomeActivity"
     android:orientation="vertical">
 
-    <Space
+    <TextView
+        android:id="@+id/tVtitle"
         android:layout_width="match_parent"
-        android:layout_height="560dp"
-        android:layout_weight="1" />
+        android:layout_height="115dp"
+        android:layout_weight="1"
+        android:autoSizeTextType="uniform"
+        android:gravity="center"
+        android:text="Get grar"/>
+
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
 
     <Button
         android:id="@+id/driver"
@@ -23,11 +33,11 @@
         android:id="@+id/customer"
         android:textSize="50dp"
         android:layout_width="match_parent"
-        android:layout_height="218dp"
+        android:layout_height="175dp"
         android:text="I'm a Customer" />
     <Space
-        android:layout_width="match_parent"
-        android:layout_height="560dp"
-        android:layout_weight="1" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
 
 </LinearLayout>

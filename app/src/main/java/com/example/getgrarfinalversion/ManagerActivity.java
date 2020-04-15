@@ -7,6 +7,7 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,16 +22,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
@@ -38,46 +44,133 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static com.example.getgrarfinalversion.FBref.refAuth;
+import static com.example.getgrarfinalversion.FBref.refdrivr;
+import static com.example.getgrarfinalversion.FBref.refoffergrar;
+
 import static com.example.getgrarfinalversion.FBref.refLocations;
 import static com.example.getgrarfinalversion.FBref.refcustomer;
 import static com.example.getgrarfinalversion.R.layout.customerdialog;
 
 public class ManagerActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView lv;
-    Button btn;
-    TextView tvname  ,tvPhone,tvtypecar,tvnumbercar,tv5;
-    String address;
-    String name,phone,numbercar,typecar;
+    Button btn, btnLocation;
+    EditText eTprice, eTArrivalTime;
+    graroffer graroffer;
+    Manager manager = new Manager();
+    TextView tvname, tvPhone, tvtypecar, tvnumbercar, tv5, tvCuslocation, tvtargetAddress;
+    String customerdestination, customerlocation, Drivieraddress, price, ArrivalTime;
+    String name = "aaa", phone = "053302204", numbercar = "787878", typecar = "small", uid, name1, phone1;
     AlertDialog.Builder adb;
     Intent t;
+    LinearLayout layout;
+    double latitode, longitode;
     LinearLayout customerdialog1;
     Dialog customerdialog12;
     Customer customer;
-    FusedLocationProviderClient fusedLocationProviderClient ;
-    ArrayList<String> offer=new ArrayList<>();
+    locationObject lo;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    ArrayList<String> offer = new ArrayList<>();
     ArrayList<locationObject> locationObjects2 = new ArrayList<>();
+    locationObject lb = new locationObject();
     ArrayAdapter<String> adp;
+    Intent intent;
+    ProgressDialog pd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
-        lv=(ListView) findViewById(R.id.LV1);
+
+       /* Query query = refcustomer
+                .orderByChild("uid")
+                .equalTo(uid);
+        query.addListenerForSingleValueEvent(VEL);*/
+
+
+        layout = new LinearLayout(this);
+
+        lv = (ListView) findViewById(R.id.LV1);
         lv.setOnItemClickListener(ManagerActivity.this);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+
         adp = new ArrayAdapter<String>(ManagerActivity.this, R.layout.support_simple_spinner_dropdown_item, offer);
 
         lv.setAdapter(adp);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
 
+        FirebaseUser firebaseUser = refAuth.getCurrentUser();
+
+
+        //  FirebaseUser firebaseUser = refAuth.getCurrentUser();
+        refdrivr.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot ds) {
+                //  UID =  (String) data.getKey();
+                manager = ds.getValue(Manager.class);
+                name1 = manager.getName();
+                phone1 = manager.getPhone();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w("Failed", "Failed to read value", databaseError.toException());
+            }
+        });
+    }
+
+
+
+
+
+    /*com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dS) {
+            if (dS.exists()) {
+                for (DataSnapshot data : dS.getChildren()) {
+                    Customer customer = data.getValue(Customer.class);
+                    name = customer.getName();
+                    phone = customer.getPhone();
+                    typecar = customer.getTypeCar();
+                    numbercar = customer.getNumbercar();
+
+                    finish();
+                }
+            }
         }
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };*/
 
+
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        lb = locationObjects2.get(position);
+        uid = lb.getUid();
+        name = lb.getName();
+        phone = lb.getPhone();
+        numbercar = lb.getNumbercar();
+        typecar = lb.getTypecar();
+        customerlocation = lb.getMyLocation();
+        customerdestination = lb.getAddrees();
+        Toast.makeText(ManagerActivity.this, "" + name, Toast.LENGTH_SHORT).show();
+
+
+//        tvname.setText("Name:" + ahmad);
+        //      tvPhone.setText("Phone"+phone);
+        //    tvnumbercar.setText("Number car"+numbercar);
+        //  tvtypecar.setText("Type car"+typecar);
         start();
-    };
+    }
+
+    ;
 
 
+    ValueEventListener locationListener;
 
-        ValueEventListener locationListener;{
+    {
         locationListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -108,13 +201,22 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
         refLocations.addValueEventListener(locationListener);
 
     }
-    DialogInterface.OnClickListener myclick= new DialogInterface.OnClickListener() {
+
+    DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
-                getLocation();
-                Intent t=new Intent(ManagerActivity.this,mapforManager.class);
-                Toast.makeText(ManagerActivity.this,"Successful",Toast.LENGTH_SHORT).show();
+                ArrivalTime = eTArrivalTime.getText().toString();
+                ArrivalTime = ArrivalTime + "Minutes";
+                price = eTprice.getText().toString();
+                price = price + "₪";
+                graroffer = new graroffer(name1, phone1, price, uid, ArrivalTime);
+                refoffergrar.child(uid).setValue(graroffer);
+                 pd = ProgressDialog.show(ManagerActivity.this, "serch", "serching...", true);
+                studentconfirm();
+              //  Intent t = new Intent(ManagerActivity.this, mapforManager.class);
+               // startActivity(t);
+                Toast.makeText(ManagerActivity.this, "Successful", Toast.LENGTH_SHORT).show();
             }
             if (which == DialogInterface.BUTTON_NEGATIVE) {
                 dialog.cancel();
@@ -123,86 +225,73 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
         }
 
     };
+
     public void start() {
-        ValueEventListener customerdetails;
-
-        customerdialog1 = (LinearLayout) getLayoutInflater().inflate(R.layout.customerdialog, null);
+        layout = (LinearLayout) getLayoutInflater().inflate(customerdialog, null);
+        tvname = (TextView) layout.findViewById(R.id.tvname);
+        tvPhone = (TextView) layout.findViewById(R.id.tvPhone);
+        tvtypecar = (TextView) layout.findViewById(R.id.tvtypecar);
+        tvnumbercar = (TextView) layout.findViewById(R.id.tvnumbercar);
+        tvCuslocation = (TextView) layout.findViewById(R.id.tvCuslocation);
+        eTArrivalTime = (EditText) layout.findViewById(R.id.eTeTArrivalTime);
+        eTprice = (EditText) layout.findViewById(R.id.eTprice);
+        tvtargetAddress = (TextView) layout.findViewById(R.id.tvtargetAddress);
         adb = new AlertDialog.Builder(this);
-        adb.setView(customerdialog1);
-        adb.setTitle("customer details  ");
-        tvname = (TextView) findViewById(R.id.tvname);
-        tvPhone = (TextView) findViewById(R.id.tvPhone);
-        tvtypecar = (TextView) findViewById(R.id.tvtypecar);
-        tvnumbercar = (TextView) findViewById(R.id.tvnumbercar);
-        adb.setPositiveButton("enter", (DialogInterface.OnClickListener) myclick);
-        adb.setNegativeButton("cancel", (DialogInterface.OnClickListener) myclick);
+        adb.setView(layout);
+        adb.setTitle("your customer");
+        adb.setMessage("If you want click OK");
+        tvname.setText("Name: " + name);
+        tvPhone.setText("Phone Number: " + phone);
+        tvCuslocation.setText("C location: " + customerlocation);
+        tvtargetAddress.setText("customer destination: " + customerdestination);
+        tvnumbercar.setText("Car number: " + numbercar);
+        tvtypecar.setText("car Type: " + typecar);
+
+
+        adb.setNegativeButton("cancel", myclick);
+        adb.setPositiveButton("OK", myclick);
         adb.show();
-        customerdetails = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    String uid = (String) data.getKey();
-                    Customer c = data.getValue(Customer.class);
-
-                    name = c.getName();
-                    phone = c.getPhone();
-                    typecar = c.getTypeCar();
-                    numbercar = c.getNumbercar();
-                    tvname.setText(name);
-                    tvPhone.setText(phone);
-                    tvnumbercar.setText(numbercar);
-                    tvtypecar.setText(typecar);
-
-                }
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w("ManagerActivity", "Failed to read value", databaseError.toException());
-            }
-
-
-        };refcustomer.addValueEventListener(customerdetails);
-
 
     }
 
-    private void getLocation() {
-        fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
-            @Override
-            public void onComplete(@NonNull Task<Location> task) {
-                // Intiialize location
-                Location location = task.getResult();
-                if (location!=null){
-                    //Intiialize geoCoder
-                    Geocoder geocoder = new Geocoder(ManagerActivity.this,
-                            Locale.getDefault());
-                    // Intiialize address list
-                    try {
-                        List<Address> addresses= geocoder.getFromLocation(
-                                location.getLatitude(),location.getLongitude(),1
-                        );
-                        //set address
-                        tv5.setText(Html.fromHtml(
-                                "<font color =' #6200EE'><b>Address:</b><br></fonnt>"
-                                        + addresses.get(0).getAddressLine(0))
-                        );
+    public void studentconfirm() {
+        pd = ProgressDialog.show(this, "Awaiting student acceptment", "Waiting...", true);
+        Query query = refLocations
+                .orderByChild("uid").equalTo(uid);
+        query.addValueEventListener(VEL);
+    }
 
-
-                    } catch (IOException e){
-                        e.printStackTrace();
+    com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dS) {
+            if (dS.exists()) {
+                for (DataSnapshot data : dS.getChildren()) {
+                    lo = data.getValue(locationObject.class);
+                }
+                if (lo.getStatus() == 2) {
+                    Toast.makeText(ManagerActivity.this, " Accepted!", Toast.LENGTH_LONG).show();
+                    pd.dismiss();
+                    intent = new Intent(ManagerActivity.this, mapforManager.class);
+                    startActivity(intent);
+                } else {
+                    if (lo.getStatus() == 0) {
+                        refoffergrar.child(uid).removeValue();
+                        refLocations.child(uid).removeValue();
+                        Toast.makeText(ManagerActivity.this, " Declined", Toast.LENGTH_LONG).show();
+                        pd.dismiss();
                     }
-
                 }
-
             }
-        });
-        address = tv5.getText().toString();
-        Toast.makeText(ManagerActivity.this, address, Toast.LENGTH_LONG).show();
-    }
+        }
 
- }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+        }
+
+
+    };
+}
 
 
 

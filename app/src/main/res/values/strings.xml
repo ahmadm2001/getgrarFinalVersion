@@ -18,4 +18,8 @@
 
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="map_key" translatable="false">
+          AIzaSyAdYl5sPMCD1GC_A4yZsogPLoQo2lv9jSQ
+    </string>
+
 </resources>

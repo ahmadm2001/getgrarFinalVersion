@@ -33,7 +33,7 @@ import static com.example.getgrarfinalversion.FBref.refAuth;
 
 import static com.example.getgrarfinalversion.FBref.refcustomer;
 
-public class LoginForCusromer extends AppCompatActivity {
+public class LoginForCusromer extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     TextView tVtitle, tVregister;
     EditText eTname, eTphone, eTemail, eTpass,eTnumbercar;
@@ -42,7 +42,7 @@ public class LoginForCusromer extends AppCompatActivity {
     Spinner spinner;
     String name, phone, email, password, uid,numbercar,typecar;
     Customer customer;
-    Boolean stayConnect, registered, firstrun;
+    Boolean stayConnect, registered, firstrun,inorder=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class LoginForCusromer extends AppCompatActivity {
                 R.array.numbers, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-//        spinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+        spinner.setOnItemSelectedListener(this);
         stayConnect=false;
         registered=true;
 
@@ -176,7 +176,7 @@ public class LoginForCusromer extends AppCompatActivity {
                                 Log.d("MainActivity", "createUserWithEmail:success");
                                 FirebaseUser user = refAuth.getCurrentUser();
                                 uid = user.getUid();
-                                customer=new Customer( name,  phone,  email, typecar,numbercar ,uid);
+                                customer=new Customer(name, phone,email, typecar,numbercar, uid,inorder);
                                 refcustomer.child(uid).setValue(customer);
                                 Toast.makeText(LoginForCusromer.this, "Successful registration", Toast.LENGTH_LONG).show();
                                 Intent si = new Intent(LoginForCusromer.this,CustomerActivity.class);

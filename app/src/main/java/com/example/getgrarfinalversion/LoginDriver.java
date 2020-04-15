@@ -36,6 +36,7 @@ public class LoginDriver extends AppCompatActivity {
     TextView tVtitle, tVregister;
     EditText eTname, eTphone, eTemail, eTpass,eTnumbercar,eTNd;
     CheckBox cBstayconnect;
+    locationObject locationObject;
     Button btn;
     boolean yes = false;
     String name, phone, email, password, uid,numbercar,Towinglicense;
@@ -172,6 +173,7 @@ public class LoginDriver extends AppCompatActivity {
                                 FirebaseUser user = refAuth.getCurrentUser();
                                 uid = user.getUid();
                                 manager=new Manager( name,  phone,  email, Towinglicense, numbercar , uid,  yes);
+
                                 refdrivr.child(uid).setValue(manager);
                                 Toast.makeText(LoginDriver.this, "Successful registration", Toast.LENGTH_LONG).show();
                                 Intent si = new Intent(LoginDriver.this,ManagerActivity.class);
