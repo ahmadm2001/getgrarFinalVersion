@@ -268,7 +268,7 @@ public class CustomerActivity extends AppCompatActivity {
                 locationObject2 = new locationObject(ahmad, address1, UID, name, numbercar, typecar, phone,status);
                 refLocations.child(address1).setValue(locationObject2);
                 Toast.makeText(CustomerActivity.this, "Lesson Accepted", Toast.LENGTH_LONG).show();
-                intent = new Intent(CustomerActivity.this,mapforManager.class);
+                intent = new Intent(CustomerActivity.this,MapActivity.class);
                 startActivity(intent);
             }
         });

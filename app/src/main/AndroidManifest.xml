@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CreditsActivity"></activity>
+        <activity android:name=".MapActivity"></activity>
+        <activity android:name=".CreditsActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginForCusromer" />
         <activity android:name=".LoginDriver" />
@@ -36,7 +37,6 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".Detailstow" />
-        <activity android:name=".mapforManager" />
         <activity android:name=".CustomerActivity" />
         <activity android:name=".ManagerActivity" />
         <activity android:name=".MainActivity">
@@ -47,7 +47,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".FetchAddressIntentService" />
     </application>
 
 </manifest>

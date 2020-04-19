@@ -271,7 +271,7 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
                 if (lo.getStatus() == 2) {
                     Toast.makeText(ManagerActivity.this, " Accepted!", Toast.LENGTH_LONG).show();
                     pd.dismiss();
-                    intent = new Intent(ManagerActivity.this, mapforManager.class);
+                    intent = new Intent(ManagerActivity.this, MapActivity.class);
                     startActivity(intent);
                 } else {
                     if (lo.getStatus() == 0) {
