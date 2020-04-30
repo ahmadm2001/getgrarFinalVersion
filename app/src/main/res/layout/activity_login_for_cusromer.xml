@@ -32,9 +32,9 @@
             android:layout_weight="1"
             android:gravity="center"
             android:id="@+id/tVtitle"
-            android:text="Login"
+            android:text="Login For Customer"
             android:autoSizeTextType="uniform"
-
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:textStyle="bold" />
 
         <Space
@@ -142,6 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:text="Stay Connected" />
 
 
@@ -186,6 +187,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:onClick="logorreg"
+                android:textSize="20dp"
+                android:background="#5DADE2"
                 android:text="Login" />
 
             <Space

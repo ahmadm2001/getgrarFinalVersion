@@ -17,6 +17,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.ResultReceiver;
 import android.text.Html;
 import android.util.Log;
@@ -29,6 +30,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
@@ -59,63 +62,54 @@ import static com.example.getgrarfinalversion.FBref.refoffergrar;
 
 public class CustomerActivity extends AppCompatActivity {
     //Initialize variable
-    Button btLocation;
-    TextView tv1, tv2, tv3, tv4, tv5,tvprice,tvPhonee1,tvname1,tvArrivalTime;
-    String uid = "sfns", address1 = "dmfdf", location = "ah,d", locationn = "locationssss",name,phone,numbercar,typecar;
+
+    Button btLocation,btn;
+    TextView tv1, tv2, tv3, tv4, tv5,tvprice,tvPhonee1,tvname1,tvArrivalTime,latLongTV;
+    String uid , address1 , location , locationn ,name,phone,numbercar,typecar,lat1,long2,lastlat,lastlong,Duid="";
     EditText targetAddress;
     graroffer lo=new graroffer();
     int status=1;
+    Double firstlat,firstlong1;
     ProgressDialog pd;
     LinearLayout offerdialog;
     locationObject locationObject2;
     String ahmad = "haha",Name1,Phone1,ArrivalTime,price;
    // Customer customer=new Customer();
     Manager yes;
-    Boolean aBoolean = true,inorder;
+    Boolean act=false;
+    Boolean aBoolean = true;
     Intent intent;
     Intent t;
     String UID;
     AlertDialog.Builder adb;
     locationObject locationObject1;
+    Double llat,long3;
     FusedLocationProviderClient fusedLocationProviderClient;
     locationObject locationObject3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer);
+        btn=(Button) findViewById(R.id.btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                targetAddress = (EditText) findViewById(R.id.targetAddress);
+                GeocodingLocation locationAddress = new GeocodingLocation();
+                String address = targetAddress.getText().toString();
 
-
+                locationAddress.getAddressFromLocation(address,
+                  getApplicationContext(), new GeocoderHandler());
+            }
+        });
         //Assign variable
-        targetAddress = (EditText) findViewById(R.id.targetAddress);
         btLocation = (Button) findViewById(R.id.ButtonGetCurrentLocation);
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
         tv3 = (TextView) findViewById(R.id.tv3);
         tv4 = (TextView) findViewById(R.id.tv4);
         tv5 = (TextView) findViewById(R.id.tv5);
-        //get uid from firebase
-       // FirebaseUser firebaseUser = refAuth.getCurrentUser();
-        //UID=firebaseUser.getUid();
-
-        /*FirebaseUser firebaseUser = refcustomer.();
-        refcustomer.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                customer =dataSnapshot.getValue(Customer.class);
-                name = customer.getName();
-                phone = customer.getPhone();
-                typecar=customer.getTypeCar();
-                numbercar=customer.getNumbercar();
-                UID = customer.getUid();
-                // קורא מידע מהפיירבייס
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-            }
-        });*/
-
-
-
+        latLongTV = (TextView) findViewById(R.id.latLongTV1);
 
 
 
@@ -129,7 +123,7 @@ public class CustomerActivity extends AppCompatActivity {
                     phone = customer.getPhone();
                     typecar=customer.getTypeCar();
                     numbercar=customer.getNumbercar();
-                    inorder=customer.getinorder();
+
                // UID = customer.getUid();
 
                 }
@@ -160,6 +154,8 @@ public class CustomerActivity extends AppCompatActivity {
                 if (ActivityCompat.checkSelfPermission(CustomerActivity.this
                         , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     //when permission grantrd
+                    Toast.makeText(CustomerActivity.this, " Double click please ", Toast.LENGTH_LONG).show();
+
                     getLocation();
                 } else {
                     //when permission denied
@@ -186,13 +182,14 @@ public class CustomerActivity extends AppCompatActivity {
                                 );
                                 //set latitude on TextView
                                 tv1.setText(Html.fromHtml(
-                                        "<font color =' #6200EE'><b>Latitude:</b><br></fonnt>"
+                                        "<font color =' #6200EE'><b></b><br></fonnt>"
                                                 + addresses.get(0).getLatitude()
+
 
                                 ));
                                 //set Longitude on TextView
                                 tv2.setText(Html.fromHtml(
-                                        "<font color =' #6200EE'><b>Longitude:</b><br></fonnt>"
+                                        "<font color =' #6200EE'><b></b><br></fonnt>"
                                                 + addresses.get(0).getLongitude()
 
                                 ));
@@ -215,7 +212,10 @@ public class CustomerActivity extends AppCompatActivity {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
+                            long2=tv2.getText().toString();
+                            firstlong1=Double.parseDouble(long2);
+                            lat1=tv1.getText().toString();
+                            firstlat=Double.parseDouble(lat1);
                         }
 
                     }
@@ -223,10 +223,36 @@ public class CustomerActivity extends AppCompatActivity {
             }
         });
     }
+
+    private class GeocoderHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            String locationAddress;
+            switch (message.what) {
+                case 1:
+                    Bundle bundle = message.getData();
+                    locationAddress = bundle.getString("address");
+                    break;
+                default:
+                    locationAddress = null;
+            }
+
+           // latlong3 = Double.parseDouble(locationAddress);
+            lastlat = locationAddress.substring(0,7);
+            lastlong =locationAddress.substring(19,26);
+
+            llat = Double.parseDouble(lastlat);
+            long3 = Double.parseDouble(lastlong);
+            Toast.makeText(CustomerActivity.this, llat+","+long3, Toast.LENGTH_LONG).show();
+            latLongTV.setText(locationAddress);
+
+        }
+    }
     com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
             if (dS.exists()) {
+                Toast.makeText(CustomerActivity.this, " Accepted", Toast.LENGTH_LONG).show();
                 for(DataSnapshot data : dS.getChildren()) {
                     lo = data.getValue(graroffer.class);
 
@@ -255,7 +281,7 @@ public class CustomerActivity extends AppCompatActivity {
         tvname1.setText("Name: " + Name1);
         tvPhonee1.setText("Phone: " + Phone1);
         tvprice.setText("The price  is: " + price);
-        tvArrivalTime.setText("ArrivalTime in: " + Name1);
+        tvArrivalTime.setText("ArrivalTime in: " + ArrivalTime);
 
 
 
@@ -265,10 +291,12 @@ public class CustomerActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 status = 2;
-                locationObject2 = new locationObject(ahmad, address1, UID, name, numbercar, typecar, phone,status);
-                refLocations.child(address1).setValue(locationObject2);
-                Toast.makeText(CustomerActivity.this, "Lesson Accepted", Toast.LENGTH_LONG).show();
-                intent = new Intent(CustomerActivity.this,MapActivity.class);
+                locationObject2 = new locationObject(ahmad, address1, UID, name
+                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,act);
+                refLocations.child(address1)
+                        .setValue(locationObject2);
+                Toast.makeText(CustomerActivity.this, " Accepted", Toast.LENGTH_LONG).show();
+                intent = new Intent(CustomerActivity.this,mapActivity.class);
                 startActivity(intent);
             }
         });
@@ -276,9 +304,11 @@ public class CustomerActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 status = 0;
-                locationObject3 = new locationObject(ahmad, address1, UID, name, numbercar, typecar, phone,status);
-                refLocations.child(address1).setValue(locationObject3);
-                Toast.makeText(CustomerActivity.this, "Lesson Declined", Toast.LENGTH_LONG).show();
+                locationObject3 = new locationObject(ahmad, address1, UID, name
+                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,act);
+                refLocations.child(address1)
+                        .setValue(locationObject3);
+                Toast.makeText(CustomerActivity.this, " Declined", Toast.LENGTH_LONG).show();
                 dialog.cancel();
             }
         });
@@ -288,19 +318,21 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void order(View view) {
         ahmad = tv5.getText().toString();
-        address1 = targetAddress.getText().toString();
-        if (address1.isEmpty()) targetAddress.setError("you must enter your destination");
-        locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar, phone,status);
+       address1 = targetAddress.getText().toString();
+       if (address1.isEmpty()) targetAddress.setError("you must enter your destination");
+        locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                , phone,status,firstlong1,firstlat,llat,long3,Duid,act);
         Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
-        refLocations.child(address1).setValue(locationObject1);
+
+        refLocations.child(address1)
+                .setValue(locationObject1);
+
          pd = ProgressDialog.show(this, "serch", "serching...", true);
         Query query = refoffergrar
-               .orderByChild("uid")
+               .orderByChild("customeruid")
                     .equalTo(UID);
         query.addValueEventListener(VEL);
-      //  Query query1 = refdrivr.child("manager").orderByChild("phone").equalTo("true");
-       // t = new Intent(this, Detailstow.class);
-        //startActivity(t);
+
     }
 
 

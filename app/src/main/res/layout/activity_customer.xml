@@ -5,22 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#D5DBDB "
     android:padding="16dp"
+
     android:animateLayoutChanges="true"
     android:layout_gravity="center_horizontal"
     tools:context=".CustomerActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="32dp">
+
     <EditText
         android:id="@+id/targetAddress"
-        android:layout_width="356dp"
+        android:layout_width="309dp"
         android:layout_height="100dp"
-        android:hint="enter your destination"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textColorHint="@color/common_google_signin_btn_text_dark_focused"
+        android:hint="Enter your address destination"
         android:textSize="20dp" />
+
+
+        <Button
+            android:id="@+id/btn"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:background="#48C9B0"
+            android:layout_height="wrap_content"
+            android:text="find" />
+
+    </LinearLayout>
     <Button
         android:id="@+id/ButtonGetCurrentLocation"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#48C9B0"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:text="Click to find your location" />
 
 <LinearLayout
@@ -32,12 +55,15 @@
     <TextView
         android:id="@+id/tv1"
         android:layout_width="0dp"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/tv2"
         android:layout_width="0dp"
+        android:visibility="invisible"
+
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
         </LinearLayout>
@@ -51,28 +77,59 @@
         <TextView
         android:id="@+id/tv3"
         android:layout_width="0dp"
+        android:visibility="invisible"
         android:layout_height="wrap_content"
         android:layout_weight="1"/>
 
         <TextView
-        android:id="@+id/tv4"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+         android:id="@+id/tv4"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/latLongTV1"
+                android:layout_width="0dp"
+                android:visibility="invisible"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/tv5"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:layout_marginTop="16dp"
+                android:visibility="visible" />
+
+
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="285dp"
+        android:layout_height="302dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="191dp"
+            android:layout_weight="2" />
+
+
+        <Button
+            android:id="@+id/order"
+            android:layout_width="269dp"
+            android:layout_height="284dp"
+            android:background="@drawable/circle_button"
+            android:text="To continue click here"
+            android:onClick="order"
+            android:textSize="20dp" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"/>
 
     </LinearLayout>
-        <TextView
-        android:id="@+id/tv5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-        android:layout_weight="1"/>
-    <Button
-        android:id="@+id/order"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:onClick="order"
-        android:layout_height="wrap_content"
-        android:text=" to Continue Click Here" />
-
-    </LinearLayout>
+</LinearLayout>

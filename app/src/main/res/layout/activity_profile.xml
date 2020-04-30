@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#D5DBDB "
     android:orientation="horizontal"
     tools:context=".ProfileActivity">
+
     <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -21,95 +23,124 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2" />
+
         <TextView
+            android:id="@+id/tVtitle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/tVtitle"
-            android:text="profile"
             android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="Profile"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/upB"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="upload pic"
-            android:onClick="upload"/>
 
         <ImageView
             android:id="@+id/iV"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:onClick="upload"
+
             android:layout_weight="2"
             tools:srcCompat="@tools:sample/avatars" />
 
         <Button
-            android:id="@+id/downB"
+            android:id="@+id/btnUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="upload"
+            android:background="#48C9B0"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:text="Upload"
+            android:textStyle="bold"
+            />
+
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View pic"
-            android:onClick="download"/>
+            android:background="#48C9B0"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textStyle="bold"
+            android:onClick="download"
+            />
 
         <Space
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5" />
 
-
         <TextView
-            android:id="@+id/ed1"
+            android:id="@+id/towinglicense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textPersonName"
-            android:hint="name" />
+            android:visibility="invisible"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textStyle="bold"
+            android:hint="towinglicense"
+            android:inputType="number"
+            android:text="Towing License : " />
 
         <TextView
-            android:id="@+id/ed2"
+            android:id="@+id/nameview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="phone"
-            android:hint="phone" />
-
-        <TextView
-            android:id="@+id/ed3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:hint="Class"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:inputType="text"
-            android:hint="typeCar" />
+            android:textStyle="bold"
+            android:visibility="visible" />
 
         <TextView
-            android:id="@+id/ed4"
+            android:id="@+id/phoneview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="number"
-            android:ems="10"
-            android:hint="NumberCAr" />
+            android:visibility="visible"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:inputType="number|phone"
+            android:textStyle="bold"
+            android:hint="phone:" />
 
         <TextView
-            android:id="@+id/ed5"
+            android:id="@+id/eTemail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:visibility="invisible"
-            android:inputType="number"
-            android:hint="NumberDrivinigLicense" />
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:visibility="visible"
+            android:textStyle="bold"
+
+            android:hint="e-mail:"
+            android:inputType="textEmailAddress"
+            android:text="email" />
 
         <TextView
-            android:id="@+id/ed7"
+            android:id="@+id/eTnumbercar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textStyle="bold"
+
+            android:layout_weight="1"
+            android:hint="Car number:" />
+
+
+
+        <TextView
+            android:id="@+id/typecar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10"
-            android:visibility="invisible"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:visibility="visible"
+            android:textStyle="bold"
+            android:hint="Type car"
             android:inputType="number"
-            android:hint="Number Drivining License" />
+            android:text="Type car:" />
 
 
     </LinearLayout>

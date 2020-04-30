@@ -1,5 +1,6 @@
 package com.example.getgrarfinalversion;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,17 +12,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,105 +32,101 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import static com.example.getgrarfinalversion.FBref.refAuth;
 import static com.example.getgrarfinalversion.FBref.refImages;
 import static com.example.getgrarfinalversion.FBref.refcustomer;
 import static com.example.getgrarfinalversion.FBref.refdrivr;
-
 import java.io.File;
 import java.io.IOException;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText eTname,eTnumbercar;
+
+    TextView towinglicense,nameview,phoneview,eTnumbercar,eTemail,typecar;
     ImageView iV;
-    String uid;
-    String name, Phone,email, TypeCar,numbercar,Towinglicense;
-    Boolean type;
+    String UID,name,phone,Stowinglicense,numbercar,email,name1,phone1,email1,cartype,email2,numbercar1;
+    Intent intent;
     int Gallery=1;
-    Customer customer  = new Customer();
-    Manager manger = new Manager();
+    Customer customer;
+    Manager driver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        nameview = (TextView) findViewById(R.id.nameview);
+        phoneview = (TextView) findViewById(R.id.phoneview);
+        towinglicense = (TextView) findViewById(R.id.towinglicense);
+        eTnumbercar = (TextView) findViewById(R.id.eTnumbercar);
+        eTemail = (TextView) findViewById(R.id.eTemail);
+        typecar = (TextView) findViewById(R.id.typecar);
+
         iV=(ImageView)findViewById(R.id.iV);
+
         FirebaseUser firebaseUser = refAuth.getCurrentUser();
-        uid=firebaseUser.getUid();
+        UID = firebaseUser.getUid();
+
         Query query = refcustomer
                 .orderByChild("uid")
-                .equalTo(uid);
+                .equalTo(UID);
         query.addListenerForSingleValueEvent(VEL);
-
 
         Query query2 = refdrivr
                 .orderByChild("uid")
-                .equalTo(uid);
-        query.addListenerForSingleValueEvent(VEL2);
-
+                .equalTo(UID);
+        query2.addListenerForSingleValueEvent(VEL2);
     }
-    com.google.firebase.database.ValueEventListener VEL2 = new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot dS) {
-            if (dS.exists()) {
-                for(DataSnapshot data : dS.getChildren()) {
-                    manger = data.getValue(Manager.class);
-                }
-                name = manger.getName();
-                Phone = manger.getPhone();
-                email = manger.getEmail();
-                Towinglicense = manger.getTowinglicense();
-                numbercar = manger.getNumbercar();
-                type = false;
-                show();
-            }
-
-        }
-        @Override
-        public void onCancelled(@NonNull DatabaseError databaseError) {
-        }
-    };
-
-    private void show() {
-        if(type){
-            // מציג נצונים של לקוח
-            eTnumbercar.setVisibility(View.VISIBLE);
-
-
-        }
-        else{
-
-            // מציג נתונים של נהג
-        }
-    }
-
 
     com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
+            /**
+             * Listener for if customer is authenticated with the app
+             * <p>
+             * @param dS
+             */
             if (dS.exists()) {
                 for(DataSnapshot data : dS.getChildren()) {
                     customer = data.getValue(Customer.class);
+                    name = customer.getName();
+                    phone = customer.getPhone();
+                    cartype=customer.getTypeCar();
+                    email=customer.getEmail();
+                    numbercar=customer.getNumbercar();
                 }
-                name = customer.getName();
-                Phone = customer.getPhone();
-                email = customer.getEmail();
-                TypeCar = customer.getTypeCar();
-                numbercar = customer.getNumbercar();
-                type = true;
-                show();
+               customerprof();
 
             }
-
         }
         @Override
         public void onCancelled(@NonNull DatabaseError databaseError) {
         }
     };
 
+    com.google.firebase.database.ValueEventListener VEL2 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dS) {
+            /**
+             * Listener for if driver is authenticated with the app
+             * <p>
+             * @param dS
+             */
+            if (dS.exists()) {
+                for(DataSnapshot data : dS.getChildren()) {
+                    driver = data.getValue(Manager.class);
+                    name1 = driver.getName();
+                    phone1 = driver.getPhone();
+                    email2=driver.getEmail();
+                    Stowinglicense=driver.getTowinglicense();
+                    numbercar1=driver.getNumbercar();
+                    drevierprof();
+                }
 
-
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
 
     /**
      * Selecting image file to upload to Firebase Storage
@@ -212,4 +210,33 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    private void customerprof() {
+        /**
+         * Shows the appropriate items for the customer's profile.
+         * <p>
+         */
+
+
+        nameview.setText("Name :"+name);
+        phoneview.setText("Phone :"+phone);
+        eTnumbercar.setText("Car Number: "+numbercar);
+        eTemail.setText("Email: "+email);
+        typecar.setText("Car Type: "+cartype);
+    }
+
+    private void drevierprof() {
+        /**
+         * Shows the appropriate items for the driver's profile.
+         * <p>
+         */
+
+        typecar.setVisibility(View.INVISIBLE);
+        towinglicense.setVisibility(View.VISIBLE);
+
+        nameview.setText("Name :"+name1);
+        phoneview.setText("Phone :"+phone1);
+        eTnumbercar.setText("Car Number: "+numbercar1);
+        eTemail.setText("Email: "+email2);
+        towinglicense.setText("Towing License Number: "+Stowinglicense);
+    }
 }

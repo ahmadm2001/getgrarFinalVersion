@@ -33,7 +33,8 @@
             android:layout_weight="1"
             android:gravity="center"
             android:id="@+id/tVtitle"
-            android:text="Login"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:text="Login for Driver"
             android:autoSizeTextType="uniform"
 
             android:textStyle="bold" />
@@ -143,6 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
             android:text="Stay Connected" />
 
 
@@ -183,10 +185,12 @@
 
             <Button
                 android:id="@+id/btn"
-                android:layout_width="0dp"
+                android:layout_width="59dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
+                android:background="#5DADE2"
                 android:onClick="logorreg"
+                android:textSize="30dp"
                 android:text="Login" />
 
             <Space

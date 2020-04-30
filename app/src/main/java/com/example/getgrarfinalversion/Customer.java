@@ -2,14 +2,12 @@ package com.example.getgrarfinalversion;
 
 public class Customer {
     private String name, Phone,email, TypeCar,numbercar, uid;
-    Boolean inorder;
     public Customer(){}
-    public Customer(String Name, String Phone,String email, String typeCar, String Numbercar, String uid ,Boolean inorder){
+    public Customer(String Name, String Phone,String email, String typeCar, String Numbercar, String uid ){
             this.name=Name;
             this.TypeCar=typeCar;
         this.numbercar=Numbercar;
         this.Phone=Phone;
-        this.inorder=inorder;
         this.uid=uid;
         this.email=email;
     }
@@ -64,20 +62,6 @@ public class Customer {
         this.uid = uid;
     }
 
-    public Boolean getinorder(){
-        return inorder;
-    }
 
-    public void setInorder(boolean inorder) {
-        this.inorder = inorder;
-    }
-    /*public void copyCustomer(Customer customer){
-        this.name=customer.getName();
-        this.Phone=customer.getPhone();
-        this.email=customer.getEmail();
-        this.numbercar=customer.getNumbercar();
-        this.TypeCar=customer.getTypeCar();
-        this.uid=customer.getUid();
-    }*/
 
 }

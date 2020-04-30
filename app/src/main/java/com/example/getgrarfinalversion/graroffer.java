@@ -2,14 +2,22 @@ package com.example.getgrarfinalversion;
 
 public class graroffer {
 
-    private String name,phone, price, uid, ArrivalTime;
+    private String name,phone, price, customeruid, ArrivalTime,driveruid;
+    private Double lat,long1;
+
+    private boolean Act;
 public graroffer(){}
-    public graroffer(String name,String phone ,String price, String uid, String ArrivalTime ) {
+    public graroffer(String name,String phone ,String price, String customeruid, String ArrivalTime, Double lat
+            , Double long1,String driveruid,Boolean act) {
         this.name=name;
         this.phone=phone;
         this.price = price;
-        this.uid = uid;
+        this.customeruid = customeruid;
         this.ArrivalTime = ArrivalTime;
+        this.lat=lat;
+        this.long1=long1;
+        this.driveruid=driveruid;
+         this.Act=Act;
 
     }
 
@@ -38,12 +46,20 @@ public graroffer(){}
     }
 
 
-    public String getUid() {
-        return uid;
+    public String getCustomeruid() {
+        return customeruid;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setCustomeruid(String uid) {
+        this.customeruid = uid;
+    }
+
+    public String getDriveruid() {
+        return driveruid;
+    }
+
+    public void setDriveruid(String driveruid) {
+        this.driveruid = driveruid;
     }
 
     public String getArrivalTime() {
@@ -52,5 +68,29 @@ public graroffer(){}
 
     public void setArrivalTime(String arrivalTime) {
         ArrivalTime = arrivalTime;
+    }
+
+    public Double getLong1() {
+        return long1;
+    }
+
+    public void setLong1(Double long1) {
+        this.long1 = long1;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public boolean isAct() {
+        return Act;
+    }
+
+    public void setAct(boolean act) {
+        Act = act;
     }
 }

@@ -176,7 +176,7 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
                                 Log.d("MainActivity", "createUserWithEmail:success");
                                 FirebaseUser user = refAuth.getCurrentUser();
                                 uid = user.getUid();
-                                customer=new Customer(name, phone,email, typecar,numbercar, uid,inorder);
+                                customer=new Customer(name, phone,email, typecar,numbercar, uid);
                                 refcustomer.child(uid).setValue(customer);
                                 Toast.makeText(LoginForCusromer.this, "Successful registration", Toast.LENGTH_LONG).show();
                                 Intent si = new Intent(LoginForCusromer.this,CustomerActivity.class);

@@ -5,20 +5,29 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context=".MapActivity">
-
+    tools:context=".mapActivity">
 
     <fragment
-        android:id="@+id/mapFragment"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:name="com.google.android.gms.maps.MapFragment"
-        />
-    <Button
-        android:id="@+id/btnGetDirection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Get Direction"/>
+     />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+        >
+
+            <Button
+                android:id="@+id/buttonDetails"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:text="Details"
+             />
+
+        </LinearLayout>
 
 </LinearLayout>
