@@ -42,6 +42,12 @@ public class LoginDriver extends AppCompatActivity {
     String name, phone, email, password, uid,numbercar,Towinglicense;
     Manager manager;
     Boolean stayConnect, registered, firstrun;
+    /**
+     * @author		Ahmad mashal
+     * @version	    V1.0
+     * @since		5/4/2020
+     * Login/Register Activity for driver
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +71,11 @@ public class LoginDriver extends AppCompatActivity {
     }
 
     protected void onStart() {
+        /**
+         * Checks if the user already checked the "Stay Connected" button.
+         * <p>
+         *
+         */
         super.onStart();
         SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         Boolean isChecked=settings.getBoolean("stayConnect",false);
@@ -84,6 +95,10 @@ public class LoginDriver extends AppCompatActivity {
     }
 
     private void regoption() {
+        /**
+         * Switches the screen from Login to Register.
+         * <p>
+         */
         SpannableString ss = new SpannableString("Don't have an account?  Register here!");
         ClickableSpan span = new ClickableSpan() {
             @Override
@@ -125,6 +140,12 @@ public class LoginDriver extends AppCompatActivity {
     }
 
     public void logorreg(View view) {
+        /**
+         * Checks if the user is registered and logging in, else it will register.
+         * <p>
+         *
+         * @param	view Button	on click operate the action.
+         */
         if (registered) {
             email=eTemail.getText().toString();
             password=eTpass.getText().toString();
@@ -172,7 +193,7 @@ public class LoginDriver extends AppCompatActivity {
                                 Log.d("MainActivity", "createUserWithEmail:success");
                                 FirebaseUser user = refAuth.getCurrentUser();
                                 uid = user.getUid();
-                                manager=new Manager( name,  phone,  email, Towinglicense, numbercar , uid,  yes);
+                                manager=new Manager( name,  phone,  email, Towinglicense, numbercar , uid);
 
                                 refdrivr.child(uid).setValue(manager);
                                 Toast.makeText(LoginDriver.this, "Successful registration", Toast.LENGTH_LONG).show();

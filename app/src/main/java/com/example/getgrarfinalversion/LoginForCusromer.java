@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,10 +41,16 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
     CheckBox cBstayconnect;
     Button btn;
     Spinner spinner;
+    LinearLayout LL;
     String name, phone, email, password, uid,numbercar,typecar;
     Customer customer;
     Boolean stayConnect, registered, firstrun,inorder=false;
-
+    /**
+     * @author		Ahmad mashal
+     * @version	    V1.0
+     * @since		7/4/2020
+     * Login/Register Activity for customr's.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +65,8 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
         tVregister=(TextView) findViewById(R.id.tVregister);
         btn=(Button)findViewById(R.id.btn);
         spinner = findViewById(R.id.spinner1);
+        LL = findViewById(R.id.LL);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.numbers, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -70,10 +79,15 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
     }
 
     protected void onStart() {
+        /**
+         * Checks if the user already checked the "Stay Connected" button.
+         * <p>
+         *
+         */
         super.onStart();
         SharedPreferences settings=getSharedPreferences("PREFS_NAME",MODE_PRIVATE);
         Boolean isChecked=settings.getBoolean("stayConnect",false);
-        Intent si = new Intent(LoginForCusromer.this,ManagerActivity.class);
+        Intent si = new Intent(LoginForCusromer.this,CustomerActivity.class);
         if (refAuth.getCurrentUser()!=null && isChecked) {
             stayConnect=true;
             startActivity(si);
@@ -89,6 +103,10 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
     }
 
     private void regoption() {
+        /**
+         * Switches the screen from Login to Register.
+         * <p>
+         */
         SpannableString ss = new SpannableString("Don't have an account?  Register here!");
         ClickableSpan span = new ClickableSpan() {
             @Override
@@ -97,7 +115,7 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
                 eTname.setVisibility(View.VISIBLE);
                 eTphone.setVisibility(View.VISIBLE);
                 eTnumbercar.setVisibility(View.VISIBLE);
-                spinner.setVisibility(View.VISIBLE);
+                LL.setVisibility(View.VISIBLE);
                 btn.setText("Register");
                 registered=false;
                 logoption();
@@ -117,7 +135,7 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
                 eTname.setVisibility(View.INVISIBLE);
                 eTphone.setVisibility(View.INVISIBLE);
                 eTnumbercar.setVisibility(View.INVISIBLE);
-                spinner.setVisibility(View.INVISIBLE);
+                LL.setVisibility(View.INVISIBLE);
 
                 btn.setText("Login");
                 registered=true;
@@ -130,6 +148,12 @@ public class LoginForCusromer extends AppCompatActivity implements AdapterView.O
     }
 
     public void logorreg(View view) {
+        /**
+         * Checks if the user is registered and logging in, else it will register.
+         * <p>
+         *
+         * @param	view Button	on click operate the action.
+         */
         if (registered) {
             email=eTemail.getText().toString();
             password=eTpass.getText().toString();

@@ -9,12 +9,13 @@ public class locationObject {
     private String myLocation,addrees,uid,name,phone,numbercar,typecar,Duid;
     private int status;
     Boolean Act;
+    long count;
     private Double firstlat,Firstlatlong1,lastlat,lastlong;
 
     public   locationObject(){}
     public locationObject (String myLocation,String addrees,String uid,String name,String numbercar,String typecar,
                            String phone, int status,Double Firstlatlong1,Double firstlat,
-                           Double lastlat,Double lastlong,String Duid,Boolean Act){
+                           Double lastlat,Double lastlong,String Duid,Boolean Act, long count){
 
         this.addrees=addrees;
         this.myLocation=myLocation;
@@ -30,6 +31,8 @@ public class locationObject {
         this.lastlong=lastlong;
         this.Duid=Duid;
         this.Act=Act;
+        this.count = count;
+
     }
 
     public String getAddrees() {
@@ -146,4 +149,14 @@ public class locationObject {
     public void setAct(Boolean act) {
         Act = act;
     }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
+
 }

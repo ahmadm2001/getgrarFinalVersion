@@ -52,11 +52,12 @@ import static com.example.getgrarfinalversion.FBref.refoffergrar;
 
 import static com.example.getgrarfinalversion.FBref.refLocations;
 import static com.example.getgrarfinalversion.FBref.refcustomer;
+import static com.example.getgrarfinalversion.R.layout.activity_manager;
 import static com.example.getgrarfinalversion.R.layout.customerdialog;
 
 public class ManagerActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     ListView lv;
-    Button btn, btnLocation;
+  //  Button btn, btnLocation;
     EditText eTprice, eTArrivalTime;
     graroffer graroffer;
     Boolean act=false;
@@ -67,10 +68,11 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
     String name = "aaa", phone = "053302204", numbercar = "787878", typecar = "small", uid, name1, phone1;
     AlertDialog.Builder adb;
     Intent t;
+    long count;
     LinearLayout layout;
-    double latitode, longitode;
-    LinearLayout customerdialog1;
-    Dialog customerdialog12;
+    //double latitode, longitode;
+   // LinearLayout customerdialog1;
+   // Dialog customerdialog12;
     Customer customer;
     locationObject lo;
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -81,7 +83,12 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
     Intent intent;
     ProgressDialog pd;
     Button btLocation;
-
+    /**
+     * @author		Ahmad mashal
+     * @version	    V1.0
+     * @since		8/4/2020
+     * This activity will show any active order based on location.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,6 +207,11 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
 
 
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        /**
+         * Respond to the order that has been clicked.
+         * <p>
+         * @param parent,view,position,id
+         */
         if(long1==null &&lat==null){
             Toast.makeText(ManagerActivity.this,"please find your location",Toast.LENGTH_SHORT).show();
         }
@@ -208,6 +220,7 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
         name = lb.getName();
         phone = lb.getPhone();
         numbercar = lb.getNumbercar();
+        count = lb.getCount();
         typecar = lb.getTypecar();
         customerlocation = lb.getMyLocation();
         customerdestination = lb.getAddrees();
@@ -227,10 +240,12 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     String firstAddress = (String) data.getKey();
                     locationObject LocationObject = data.getValue(locationObject.class);
-                    locationObjects2.add(LocationObject);
-                    String Location = LocationObject.getMyLocation();
-                    String finalAddrrss = LocationObject.getAddrees();
-                    offer.add("My " + Location + " and my destination is :" + finalAddrrss);
+                    if(LocationObject.isAct()) {
+                        locationObjects2.add(LocationObject);
+                        String Location = LocationObject.getMyLocation();
+                        String finalAddrrss = LocationObject.getAddrees();
+                        offer.add(Location);
+                    }
 
                 }
 
@@ -252,16 +267,22 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
 
     DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
         @Override
+        /**
+         * Respond to Price offer acceptment or decline
+         * <p>
+         * @param dialog,which
+         */
         public void onClick(DialogInterface dialog, int which) {
             if (which == DialogInterface.BUTTON_POSITIVE) {
                 ArrivalTime = eTArrivalTime.getText().toString();
                 ArrivalTime = ArrivalTime + "Minutes";
                 price = eTprice.getText().toString();
                 price = price + "₪";
-                graroffer = new graroffer(name1, phone1, price, uid, ArrivalTime, lat, long1,driveruid,act);
-                refoffergrar.child(uid).setValue(graroffer);
+                graroffer = new graroffer(name1, phone1, price, uid, ArrivalTime, lat, long1,driveruid,true, count);
+                Toast.makeText(ManagerActivity.this, "" + graroffer.isAct(), Toast.LENGTH_SHORT).show();
+                refoffergrar.child(""+ count).setValue(graroffer);
                  pd = ProgressDialog.show(ManagerActivity.this, "serch", "serching...", true);
-                studentconfirm();
+                customerconfirm();
               //  Intent t = new Intent(ManagerActivity.this, mapforManager.class);
                // startActivity(t);
                 Toast.makeText(ManagerActivity.this, "Successful", Toast.LENGTH_SHORT).show();
@@ -275,6 +296,11 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
     };
 
     public void start() {
+        /**
+         * AlertDialog for the customer's Information.
+         * <p>
+         */
+
         layout = (LinearLayout) getLayoutInflater().inflate(customerdialog, null);
         tvname = (TextView) layout.findViewById(R.id.tvname);
         tvPhone = (TextView) layout.findViewById(R.id.tvPhone);
@@ -286,12 +312,12 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
         tvtargetAddress = (TextView) layout.findViewById(R.id.tvtargetAddress);
         adb = new AlertDialog.Builder(this);
         adb.setView(layout);
-        adb.setTitle("your customer");
-        adb.setMessage("If you want click OK");
+        adb.setTitle(name+"'s order" );
+        //adb.setMessage("To continue click ok ");
         tvname.setText("Name: " + name);
         tvPhone.setText("Phone Number: " + phone);
-        tvCuslocation.setText("C location: " + customerlocation);
-        tvtargetAddress.setText("customer destination: " + customerdestination);
+        tvCuslocation.setText( customerlocation);
+        tvtargetAddress.setText(name+"'s destination: " + customerdestination);
         tvnumbercar.setText("Car number: " + numbercar);
         tvtypecar.setText("car Type: " + typecar);
 
@@ -302,33 +328,46 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-    public void studentconfirm() {
+    public void customerconfirm() {
+        /**
+         * Wait for the customer to confirm or decline the offer
+         * <p>
+         */
+
         pd = ProgressDialog.show(this, "Awaiting customer acceptment", "Waiting...", true);
         Query query = refLocations
-                .orderByChild("uid").equalTo(uid);
+                .orderByChild("count").equalTo(count);
         query.addValueEventListener(VEL);
     }
 
     com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
+            /**
+             *  Listener for if customer confirms the order or declining.
+             * <p>
+             * @param dS
+             */
             if (dS.exists()) {
                 for (DataSnapshot data : dS.getChildren()) {
                     lo = data.getValue(locationObject.class);
                 }
                 if (lo.getStatus() == 2) {
+                    graroffer.setAct(false);
+                    refoffergrar.child(""+graroffer.getCount()).setValue(graroffer);
                     lo.setDuid(driveruid);
-                    refLocations.child(lo.getAddrees()).setValue(lo);
+                    refLocations.child(""+lo.getCount()).setValue(lo);
                     Toast.makeText(ManagerActivity.this, " Accepted!", Toast.LENGTH_LONG).show();
                     pd.dismiss();
-                    intent = new Intent(ManagerActivity.this, mapActivity.class);
+                    intent = new Intent(ManagerActivity.this, HistoryActivity.class);
                     startActivity(intent);
                 } else {
                     if (lo.getStatus() == 0) {
-                        refoffergrar.child(uid).removeValue();
-                        refLocations.child(uid).removeValue();
+                        refoffergrar.child("" + lo.getCount()).removeValue();
                         Toast.makeText(ManagerActivity.this, " Declined", Toast.LENGTH_LONG).show();
                         pd.dismiss();
+                        pd.cancel();
+
                     }
                 }
             }
@@ -341,19 +380,29 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
 
     };
     public boolean onCreateOptionsMenu(Menu menu) {
+        /**
+         * Show menu options
+         * <p>
+         * @param menu
+         */
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
 
     }
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /**
+         * Respond to the menu item selected
+         * <p>
+         * @param item
+         */
         String s = item.getTitle().toString();
         t = new Intent(this, ManagerActivity.class);
         if (s.equals("Profile")) {
             t = new Intent(this, ProfileActivity.class);
             startActivity(t);
         }
-        if (s.equals("History")) {
-            t = new Intent(this, CreditsActivity.class);
+        if (s.equals("Order History")) {
+            t = new Intent(this, HistoryActivity.class);
             startActivity(t);
         }
         if (s.equals("cridets")) {

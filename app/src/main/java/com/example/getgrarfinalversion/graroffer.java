@@ -4,11 +4,11 @@ public class graroffer {
 
     private String name,phone, price, customeruid, ArrivalTime,driveruid;
     private Double lat,long1;
-
+     long count;
     private boolean Act;
 public graroffer(){}
     public graroffer(String name,String phone ,String price, String customeruid, String ArrivalTime, Double lat
-            , Double long1,String driveruid,Boolean act) {
+            , Double long1,String driveruid,Boolean act, long count) {
         this.name=name;
         this.phone=phone;
         this.price = price;
@@ -17,7 +17,8 @@ public graroffer(){}
         this.lat=lat;
         this.long1=long1;
         this.driveruid=driveruid;
-         this.Act=Act;
+         this.Act=act;
+         this.count = count;
 
     }
 
@@ -93,4 +94,13 @@ public graroffer(){}
     public void setAct(boolean act) {
         Act = act;
     }
+
+    public long getCount() {
+        return count;
+    }
+
+    public void setCount(long count) {
+        this.count = count;
+    }
+
 }

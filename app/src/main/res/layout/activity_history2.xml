@@ -16,7 +16,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:id="@+id/tVtitle"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textColor="#000000"
         android:text="Order History"
         android:autoSizeTextType="uniform"
         android:textStyle="bold" />

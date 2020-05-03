@@ -43,11 +43,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView towinglicense,nameview,phoneview,eTnumbercar,eTemail,typecar;
     ImageView iV;
-    String UID,name,phone,Stowinglicense,numbercar,email,name1,phone1,email1,cartype,email2,numbercar1;
+    String UID,name,phone,Stowinglicense,numbercar,email,name1,phone1,email1,cartype,email2,numbercar1="0975460";
     Intent intent;
     int Gallery=1;
     Customer customer;
     Manager driver;
+    /**
+     * @author		Ahmad mashal
+     * @version	    V1.0
+     * @since		7/4/2020
+     * This activity will show the profile of the user, there is an option to upload image.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,7 +222,6 @@ public class ProfileActivity extends AppCompatActivity {
          * <p>
          */
 
-
         nameview.setText("Name :"+name);
         phoneview.setText("Phone :"+phone);
         eTnumbercar.setText("Car Number: "+numbercar);
@@ -232,7 +237,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         typecar.setVisibility(View.INVISIBLE);
         towinglicense.setVisibility(View.VISIBLE);
-
         nameview.setText("Name :"+name1);
         phoneview.setText("Phone :"+phone1);
         eTnumbercar.setText("Car Number: "+numbercar1);

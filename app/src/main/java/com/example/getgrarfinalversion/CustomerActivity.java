@@ -81,11 +81,18 @@ public class CustomerActivity extends AppCompatActivity {
     Intent intent;
     Intent t;
     String UID;
+    long count;
     AlertDialog.Builder adb;
     locationObject locationObject1;
     Double llat,long3;
     FusedLocationProviderClient fusedLocationProviderClient;
     locationObject locationObject3;
+    /**
+     * @author		Ahmad mashal
+     * @version	    V1.0
+     * @since		7/4/2020
+     * customer's will order  in this activity.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,12 +145,6 @@ public class CustomerActivity extends AppCompatActivity {
         refcustomer.addValueEventListener(uploadlitner);
 
 
-
-
-
-
-
-
         //Initialize fusedLocationProviderClient
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -151,6 +152,12 @@ public class CustomerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //check premission
+                /**
+                 * Asking for getting location permission.
+                 * <p>
+                 *
+                 * @param	view Button	on click operate the action.
+                 */
                 if (ActivityCompat.checkSelfPermission(CustomerActivity.this
                         , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     //when permission grantrd
@@ -166,6 +173,10 @@ public class CustomerActivity extends AppCompatActivity {
             }
 
             private void getLocation() {
+                /**
+                 * When premission is granted, the action will fetch the users location.
+                 * <p>
+                 */
                 fusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -225,6 +236,12 @@ public class CustomerActivity extends AppCompatActivity {
     }
 
     private class GeocoderHandler extends Handler {
+        /**
+         * casting string address to latlong
+         * <p>
+         /* @param  on click operate the action
+         */
+
         @Override
         public void handleMessage(Message message) {
             String locationAddress;
@@ -251,18 +268,27 @@ public class CustomerActivity extends AppCompatActivity {
     com.google.firebase.database.ValueEventListener VEL = new ValueEventListener() {
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
+            /**
+             * After driver offering price it will come here.
+             * <p>
+             *
+             * @param DataSnapshot dS
+             */
             if (dS.exists()) {
                 Toast.makeText(CustomerActivity.this, " Accepted", Toast.LENGTH_LONG).show();
                 for(DataSnapshot data : dS.getChildren()) {
                     lo = data.getValue(graroffer.class);
 
                 }
-                Name1 = lo.getName();
-                Phone1 = lo.getPhone();
-                price = lo.getPrice();
-                ArrivalTime = lo.getArrivalTime();
-                pd.dismiss();
-                confirmation();
+                if(lo.isAct()) {
+                    Name1 = lo.getName();
+                    Phone1 = lo.getPhone();
+                    price = lo.getPrice();
+                    ArrivalTime = lo.getArrivalTime();
+                    pd.dismiss();
+
+                    confirmation();
+                }
 
             }
         }
@@ -271,8 +297,12 @@ public class CustomerActivity extends AppCompatActivity {
         }
     };
     public void confirmation(){
+        /**
+         * Opens up AlertDialog for the confirmation of the Lesson.
+         * <p>
+         *
+         */
         offerdialog = (LinearLayout) getLayoutInflater().inflate(R.layout.offerdialog, null);
-
         tvname1 = (TextView) offerdialog.findViewById(R.id.tvname1);
         tvPhonee1 = (TextView) offerdialog.findViewById(R.id.tvPhonee1);
         tvprice = (TextView) offerdialog.findViewById(R.id.tvprice);
@@ -290,66 +320,140 @@ public class CustomerActivity extends AppCompatActivity {
         adb.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                /**
+                 * When accepted it will update the driver's uid, order status, if the order is still active and the price,
+                 * it will sent the user to map activity.
+                 * <p>
+                 *
+                 * @param	DialogInterface dialog, int which.
+                 */
+                lo.setAct(false);
                 status = 2;
+
                 locationObject2 = new locationObject(ahmad, address1, UID, name
-                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,act);
-                refLocations.child(address1)
-                        .setValue(locationObject2);
+                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,false,count);
+                refLocations.child("" + count).setValue(locationObject2);
                 Toast.makeText(CustomerActivity.this, " Accepted", Toast.LENGTH_LONG).show();
-                intent = new Intent(CustomerActivity.this,mapActivity.class);
+                intent = new Intent(CustomerActivity.this,HistoryActivity.class);
                 startActivity(intent);
             }
         });
         adb.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                /**
+                 * When cancelled it will update the order status and will keep searching for another driver.
+                 * <p>
+                 *
+                 * @param	DialogInterface dialog, int which.
+                 */
                 status = 0;
                 locationObject3 = new locationObject(ahmad, address1, UID, name
-                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,act);
-                refLocations.child(address1)
-                        .setValue(locationObject3);
+                        , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
+
+
+                refLocations.child("" + count).setValue(locationObject3);
                 Toast.makeText(CustomerActivity.this, " Declined", Toast.LENGTH_LONG).show();
                 dialog.cancel();
+                pd.show();
             }
         });
         AlertDialog ad = adb.create();
         ad.show();
     }
-
     public void order(View view) {
+        /**
+         * The action will upload the order to firebase and it will search for an offer.
+         * <p>
+         *
+         * @param view Button on click operate the action.
+         */
         ahmad = tv5.getText().toString();
        address1 = targetAddress.getText().toString();
-       if (address1.isEmpty()) targetAddress.setError("you must enter your destination");
-        locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
-                , phone,status,firstlong1,firstlat,llat,long3,Duid,act);
-        Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
+       if (!address1.equals("") && !ahmad.equals("")) {
+           DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
+           mDatabaseRef.child("location").addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   if (dataSnapshot.exists()) {
+                       count = dataSnapshot.getChildrenCount();
+                       count = count + 1;
+                       locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                               , phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
+                       refLocations.child("" + count).setValue(locationObject1);
+                       Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
+                       pd = ProgressDialog.show(CustomerActivity.this, "Search", "Searching...", true);
+                       Query query = refoffergrar
+                               .orderByChild("count")
+                               .equalTo(count);
+                       query.addValueEventListener(VEL);
+                   } else {
+                       count = 1;
+                       locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                               , phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
+                       refLocations.child("" + count).setValue(locationObject1);
+                       Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
+                       pd = ProgressDialog.show(CustomerActivity.this, "Search", "Searching...", true);
+                       Query query = refoffergrar
+                               .orderByChild("count")
+                               .equalTo(count);
+                       query.addValueEventListener(VEL);
+                   }
+               }
+               @Override
+               public void onCancelled(@NonNull DatabaseError databaseError) {
+               }
+           });
 
-        refLocations.child(address1)
+           //targetAddress.setError("you must enter your destination");
+       }
+       else{
+           Toast.makeText(this, "you must enter your destination and click the location button ", Toast.LENGTH_SHORT).show();
+       }
+
+
+
+        /*locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                , phone,status,firstlong1,firstlat,llat,long3,Duid,true);
+        Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();*/
+
+        /*refLocations.child(address1)
                 .setValue(locationObject1);
 
          pd = ProgressDialog.show(this, "serch", "serching...", true);
         Query query = refoffergrar
                .orderByChild("customeruid")
                     .equalTo(UID);
-        query.addValueEventListener(VEL);
-
+        query.addValueEventListener(VEL);*/
     }
 
 
+
+
     public boolean onCreateOptionsMenu(Menu menu) {
+        /**
+         * Show menu options
+         * <p>
+         * @param menu
+         */
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
 
     }
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /**
+         * Respond to the menu item selected
+         * <p>
+         * @param item
+         */
         String s = item.getTitle().toString();
         t = new Intent(this, CustomerActivity.class);
         if (s.equals("Profile")) {
             t = new Intent(this, ProfileActivity.class);
             startActivity(t);
         }
-        if (s.equals("History")) {
-            t = new Intent(this, CreditsActivity.class);
+        if (s.equals("Order History")) {
+            t = new Intent(this, HistoryActivity.class);
             startActivity(t);
         }
         if (s.equals("cridets")) {

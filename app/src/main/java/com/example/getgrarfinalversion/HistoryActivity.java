@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,12 +28,13 @@ import java.util.ArrayList;
 import static com.example.getgrarfinalversion.FBref.refAuth;
 import static com.example.getgrarfinalversion.FBref.refLocations;
 import static com.example.getgrarfinalversion.FBref.refoffergrar;
+import static com.example.getgrarfinalversion.R.layout.customerdialog;
 
 
 public class HistoryActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
-    String UID,uidd, price, Name1, Phone1,name,phone,price2,firstAdress,lastAdress,time;
-    TextView tvnamee1, tvPhonee1, tvname1,tvPhone1,tVprice1,tVprice;
+   // String UID,uidd, price, Name1, Phone1,name,phone,price2,firstAdress,lastAdress
+           // ,time,arrivalTime,numbercar,cartype,Caddress,customerdestination;
     graroffer lo;
     locationObject locationOb;
     Boolean type;
@@ -44,6 +46,11 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
     ArrayList<locationObject> lob = new ArrayList<>();
     ArrayAdapter<String> adp;
     ListView LV1;
+    String UID,name,phone,Stowinglicense,numbercar,name1,phone1,cartype,email2,price,arrivalTime,Caddress,customerdestination,uidd;
+
+    EditText eTprice,time2;
+    TextView tvname, tvPhone, tvtypecar, tvnumbercar, tv5, tvCuslocation, tvtargetAddress;
+    TextView tvprice,tvPhonee1,tvname1,tvArrivalTime;
 
 
 
@@ -60,17 +67,26 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
         FirebaseUser firebaseUser = refAuth.getCurrentUser();
         UID = firebaseUser.getUid();
         uidd = firebaseUser.getUid();
-
+/*
 
         Query query = refoffergrar
                 .orderByChild("uid")
                 .equalTo(UID);
         query.addValueEventListener(VEL);
-
         Query query1 = refLocations
+               .orderByChild("Duid")
+               .equalTo(uidd);
+        query1.addValueEventListener(VEL2);*/
+
+        Query query = refLocations
                 .orderByChild("duid")
-                .equalTo(uidd);
-        query1.addValueEventListener(VEL2);
+                .equalTo(UID);
+        query.addListenerForSingleValueEvent(VEL2);
+
+        Query query2 = refoffergrar
+                .orderByChild("customeruid")
+                .equalTo(UID);
+        query2.addListenerForSingleValueEvent(VEL);
 
 
     }
@@ -78,7 +94,7 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
             /**
-             * Listener for if student is authenticated with the app
+             * Listener for if customer is authenticated with the app
              * <p>
              * @param dS
              */
@@ -87,9 +103,11 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
                     lo = data.getValue(graroffer.class);
                     if (!lo.isAct()) {
                         Detail.add(lo);
+                        /*name = lo.getName();
+                        phone = lo.getPhone();*/
                         price=lo.getPrice();
-                        time=lo.getArrivalTime();
-                        details.add("price: " + price + " time: " + time);
+                        arrivalTime=lo.getArrivalTime();
+                        details.add("price: " + price + " time: " + arrivalTime);
                         type = false;
 
 
@@ -113,7 +131,7 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
         @Override
         public void onDataChange(@NonNull DataSnapshot dS) {
             /**
-             * Listener for if teacher is authenticated with the app
+             * Listener for if driver is authenticated with the app
              * <p>
              * @param dS
              */
@@ -122,9 +140,13 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
                     locationOb = data.getValue(locationObject.class);
                     if (!locationOb.isAct()) {
                         lob.add(locationOb);
-                        firstAdress=locationOb.getMyLocation();
-                        lastAdress=locationOb.getAddrees();
-                        details.add("from: " + firstAdress + " to: " + lastAdress);
+                       // name = locationOb.getName();
+                     //   phone = locationOb.getPhone();
+                      //  numbercar = locationOb.getNumbercar();
+                      //  cartype = locationOb.getTypecar();
+                        Caddress = locationOb.getMyLocation();
+                        customerdestination = locationOb.getAddrees();
+                        details.add("from: " + Caddress + " to: " + customerdestination);
                         type = true;
 
 
@@ -159,14 +181,14 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
          * @param item
          */
         String st = item.getTitle().toString();
-        if (st.equals("Orders")&&type) {
-            intent = new Intent(HistoryActivity.this, ManagerActivity.class);
-            startActivity(intent);
-        }
-        else if(st.equals("Orders")&&!type){
-            intent = new Intent(HistoryActivity.this, CustomerActivity.class);
-            startActivity(intent);
-        }
+//        if (st.equals("Orders")&&type) {
+//            intent = new Intent(HistoryActivity.this, ManagerActivity.class);
+//            startActivity(intent);
+//        }
+//        else if(st.equals("Orders")&&!type){
+//            intent = new Intent(HistoryActivity.this, CustomerActivity.class);
+//            startActivity(intent);
+//        }
         if (st.equals("Order History")) {
             intent = new Intent(HistoryActivity.this, HistoryActivity.class);
             startActivity(intent);
@@ -192,18 +214,29 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
         if(!type) {
             if (!Detail.get(position).isAct()) {
 
-                time=Detail.get(position).getArrivalTime();
+                name1 = Detail.get(position).getName();
+                phone1 = Detail.get(position).getPhone();
+                price=Detail.get(position).getPrice();
+                arrivalTime=Detail.get(position).getArrivalTime();
+
+
+                /*time=Detail.get(position).getArrivalTime();
                 price = Detail.get(position).getPrice();
                 Name1 = Detail.get(position).getName();
-                Phone1 = Detail.get(position).getPhone();
+                Phone1 = Detail.get(position).getPhone();*/
 
                 adblv();
             }
         }
         else{
             if (!lob.get(position).isAct()) {
+                // true
                 name = lob.get(position).getName();
                 phone = lob.get(position).getPhone();
+                numbercar = lob.get(position).getNumbercar();
+                  cartype = lob.get(position).getTypecar();
+                Caddress = lob.get(position).getMyLocation();
+                customerdestination = lob.get(position).getAddrees();
 
                 adbltc();
             }
@@ -213,49 +246,59 @@ public class HistoryActivity extends AppCompatActivity implements AdapterView.On
 
     private void adbltc() {
         /**
-         * Open up AlertDialog for Teacher
+         * Open up AlertDialog for DRIVER
          * <p>
          */
-        odial = (LinearLayout) getLayoutInflater().inflate(R.layout.historydial, null);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(HistoryActivity.this);
+        View mView = getLayoutInflater().inflate(customerdialog, null);
 
-        tvname1 = (TextView) odial.findViewById(R.id.tvname1);
-        tvPhone1 = (TextView) odial.findViewById(R.id.tvPhone1);
-          tVprice = (TextView) odial.findViewById(R.id.tVprice);
+        tvname = (TextView) mView.findViewById(R.id.tvname);
+        tvPhone = (TextView) mView.findViewById(R.id.tvPhone);
+        tvtypecar = (TextView) mView.findViewById(R.id.tvtypecar);
+        tvnumbercar = (TextView) mView.findViewById(R.id.tvnumbercar);
+        tvCuslocation = (TextView) mView.findViewById(R.id.tvCuslocation);
+        tvtargetAddress = (TextView) mView.findViewById(R.id.tvtargetAddress);
+        time2=(EditText) mView.findViewById(R.id.eTeTArrivalTime);
+        eTprice=(EditText) mView.findViewById(R.id.eTprice);
 
-        tvname1.setText("Student: " + name);
-        tvPhone1.setText("Phone: " + phone);
-        tVprice.setText("Price: " + price2);
 
+        tvname.setText("Name: " + name);
+        tvPhone.setText("Phone Number: " + phone);
+        tvCuslocation.setText(name +"location: " + Caddress);
+        tvtargetAddress.setText("customer destination: " + customerdestination);
+        tvnumbercar.setText("Car number: " + numbercar);
+        tvtypecar.setText("car Type: " + cartype);
+        mBuilder.setTitle("your customer history");
+        time2.setVisibility(View.INVISIBLE);
+        eTprice.setVisibility(View.INVISIBLE);
 
-
-        add = new AlertDialog.Builder(this);
-        add.setView(odial);
-        AlertDialog ade = add.create();
-        ade.show();
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
     }
 
 
     public void adblv(){
         /**
-         * Open up AlertDialog for Student
+         * Open up AlertDialog for Customer
          * <p>
          */
-        OfferDial = (LinearLayout) getLayoutInflater().inflate(R.layout.priceofferdial, null);
 
-        tvnamee1 = (TextView) OfferDial.findViewById(R.id.tvnamee1);
-        tvPhonee1 = (TextView) OfferDial.findViewById(R.id.tvPhonee1);
-         tVprice1 = (TextView) OfferDial.findViewById(R.id.tVprice1);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(HistoryActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.offerdialog, null);
+        tvname1 = (TextView) mView.findViewById(R.id.tvname1);
+        tvPhonee1 = (TextView) mView.findViewById(R.id.tvPhonee1);
+        tvprice = (TextView) mView.findViewById(R.id.tvprice);
+        tvArrivalTime = (TextView) mView.findViewById(R.id.tvArrivalTime);
+        mBuilder.setTitle("your driver");
+        tvname1.setText("Name: " + name1);
+        tvPhonee1.setText("Phone: " + phone1);
+        tvprice.setText("The price  is: " + price);
+        tvArrivalTime.setText("ArrivalTime in: " + arrivalTime);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
 
-        tvnamee1.setText("Teacher: " + Name1);
-        tvPhonee1.setText("Phone: " + Phone1);
-        tVprice1.setText("The price for 1 hour is: " + price);
-
-
-
-        adb = new AlertDialog.Builder(this);
-        adb.setView(OfferDial);
-        AlertDialog ad = adb.create();
-        ad.show();
     }
 
 }
