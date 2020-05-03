@@ -23,11 +23,29 @@
             <Button
                 android:id="@+id/buttonDetails"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="#D5DBDB "
+                android:text="Details" />
+
+
+            <Button
+                android:id="@+id/btn"
+                android:background="#D5DBDB "
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Details"
-             />
+                android:onClick="lala"
+                android:text="To open a curler click here" />
 
+            <Button
+                android:id="@+id/finish"
+                android:layout_width="0dp"
+                android:background="#D5DBDB "
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:onClick="finish"
+                android:text="finish" />
 
 
         </LinearLayout>

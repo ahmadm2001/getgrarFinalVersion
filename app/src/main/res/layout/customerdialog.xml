@@ -96,15 +96,16 @@
         android:inputType="number"
         android:gravity="center"
         />
+
     <EditText
         android:id="@+id/eTeTArrivalTime"
-        android:layout_width="170dp"
-        android:textColorHint="@color/common_google_signin_btn_text_dark_focused"
+        android:layout_width="269dp"
         android:layout_height="wrap_content"
-        android:hint="enter Arrival Time in Minutes"
-        android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:gravity="center"
-        android:inputType="number"/>
+        android:hint="enter Arrival Time in Minutes"
+        android:inputType="number"
+        android:textColor="@color/common_google_signin_btn_text_dark_focused"
+        android:textColorHint="@color/common_google_signin_btn_text_dark_focused" />
 
 
 

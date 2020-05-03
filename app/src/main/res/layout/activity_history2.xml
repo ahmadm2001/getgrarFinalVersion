@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#D5DBDB "
+    android:background="#D5DBDB"
     tools:context=".HistoryActivity">
+
     <Space
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -21,14 +22,18 @@
         android:autoSizeTextType="uniform"
         android:textStyle="bold" />
 
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5" />
     <ListView
         android:id="@+id/LV1"
         android:layout_width="fill_parent"
-        android:layout_height="667dp"
+        android:layout_height="0dp"
+        android:layout_weight="8"
         android:cacheColorHint="@color/common_google_signin_btn_text_dark_focused"
         android:divider="@color/material_blue_grey_800"
         android:dividerHeight="3dp"
-
         android:listSelector="#0f0">
 
     </ListView>

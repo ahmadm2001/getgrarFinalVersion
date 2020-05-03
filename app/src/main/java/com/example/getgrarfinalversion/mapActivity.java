@@ -60,20 +60,24 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
     Location mlocationC,locationD;
     private GoogleMap mMap;
 
-
+    LatLng CFL ;
+    LatLng CLL;
+    LatLng DFL;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int Request_Code = 101;
     EditText eTprice,time;
-    Polyline polyline;
     locationObject locationObject1;
     graroffer graroffer1;
     String UID,name,phone,Stowinglicense,numbercar,name1,phone1,cartype,email2,price,arrivalTime,Caddress,customerdestination;
     Boolean type=true;
-    Double lat,longc,latD,LonfD;
+
     GoogleMap gMap;
     AlertDialog.Builder adb;
+    private Marker c;
+    private Marker d;
+    private Marker cl;
     AlertDialog.Builder adb2;
-
+    long count;
     Button dialogbtn;
     LinearLayout offerdialog,layout;
     TextView tvname, tvPhone, tvtypecar, tvnumbercar, tv5, tvCuslocation, tvtargetAddress;
@@ -110,62 +114,35 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
         FirebaseUser firebaseUser = refAuth.getCurrentUser();
         UID = firebaseUser.getUid();
 
-        /*Query query = refcustomer
-                .orderByChild("uid")
-                .equalTo(UID);
-        query.addListenerForSingleValueEvent(VEL);*/
 
+        Intent t = getIntent();
+        count = t.getLongExtra("count", -9);
+        Toast.makeText(this, ""+ count, Toast.LENGTH_SHORT).show();
                Query query = refLocations
                 .orderByChild("duid")
                 .equalTo(UID);
         query.addListenerForSingleValueEvent(VEL);
 
-        Query query2 = refoffergrar
+                Query query2 = refoffergrar
                 .orderByChild("customeruid")
                 .equalTo(UID);
         query2.addListenerForSingleValueEvent(VEL2);
 
+        Query query3 = refLocations
+                .orderByChild("uid")
+                .equalTo(UID);
+        query3.addListenerForSingleValueEvent(VEL3);
+
+        Query query4 = refoffergrar
+                .orderByChild("driveruid")
+                .equalTo(UID);
+        query4.addListenerForSingleValueEvent(VEL4);
 
 
 
-    }
-    private void GetLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[]
-                    {Manifest.permission.ACCESS_FINE_LOCATION}, Request_Code);
-            return;
-        }
-
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if(location != null){
-                    mlocationC=location;
-                    Toast.makeText(getApplicationContext(),mlocationC.getLatitude()+"."+mlocationC.getLongitude(),Toast.LENGTH_SHORT).show();
-                    SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                    supportMapFragment.getMapAsync(mapActivity.this);
-                    if (type){
-                        driverlat=mlocationC.getAltitude();
-                        driverlong=mlocationC.getLongitude();
-                    }else{
-                        customerfirstlat=mlocationC.getLatitude();
-                        customerfirstlong=mlocationC.getLongitude();
-                    }
-
-                }
-            }
-        });
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case Request_Code:
-                if (grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    GetLastLocation();
-        }
 
     }
+
 
 
 
@@ -176,29 +153,29 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
             if (dS.exists()) {
                 for (DataSnapshot data : dS.getChildren()) {
                     locationObject1 = data.getValue(locationObject.class);
-                    locationObject1.setFirstlatlong1(longc);
-                    locationObject1.setFirstlat(lat);
-                    name = locationObject1.getName();
-                    phone = locationObject1.getPhone();
-                    numbercar = locationObject1.getNumbercar();
-                    cartype = locationObject1.getTypecar();
-                    Caddress = locationObject1.getMyLocation();
-                    customerdestination = locationObject1.getAddrees();
-                    customerfirstlat = locationObject1.getFirstlat();
-                   customerfirstlong = locationObject1.getFirstlatlong1();
-                    locationObject1.setFirstlat(customerfirstlat);
-                    customerlastlat = locationObject1.getLastlat();
-                    customerlastlong = locationObject1.getLastlong();
+                    // locationObject1.setFirstlatlong1(longc);
+                    if (locationObject1.getCount() == count) {
+                    //    locationObject1.setFirstlat(lat);
+                        name = locationObject1.getName();
+                        phone = locationObject1.getPhone();
+                        numbercar = locationObject1.getNumbercar();
+                        cartype = locationObject1.getTypecar();
+                        Caddress = locationObject1.getMyLocation();
+                        customerdestination = locationObject1.getAddrees();
+                        customerfirstlat = locationObject1.getFirstlat();
+                        customerfirstlong = locationObject1.getFirstlatlong1();
+                        customerlastlat = locationObject1.getLastlat();
+                        customerlastlong = locationObject1.getLastlong();
+                        type = true;
+                    }
                 }
-                type = true;
-                GetLastLocation();
 
             }
-    }
-    @Override
-    public void onCancelled(@NonNull DatabaseError databaseError) {
-    }
-};
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
 
     com.google.firebase.database.ValueEventListener VEL2 = new ValueEventListener() {
         @Override
@@ -207,16 +184,20 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
                 for(DataSnapshot data : dS.getChildren()) {
 
                     graroffer1 = data.getValue(graroffer.class);
-                    name1 = graroffer1.getName();
-                    phone1 = graroffer1.getPhone();
-                    price=graroffer1.getPrice();
-                    arrivalTime=graroffer1.getArrivalTime();
-                    driverlat=graroffer1.getLat();
-                    driverlong=graroffer1.getLong1();
+                    if (graroffer1.getCount() == count) {
+                        name1 = graroffer1.getName();
+                        phone1 = graroffer1.getPhone();
+                        price = graroffer1.getPrice();
+                        arrivalTime = graroffer1.getArrivalTime();
+                        driverlat = graroffer1.getLat();
+                        driverlong = graroffer1.getLong1();
+
+
+                        type = false;
+                    }
 
                 }
-                type = false;
-                GetLastLocation();
+
             }
         }
         @Override
@@ -225,9 +206,64 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     };
 
+    com.google.firebase.database.ValueEventListener VEL3 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dS) {
+
+            if (dS.exists()) {
+                for (DataSnapshot data : dS.getChildren()) {
+                    locationObject1 = data.getValue(locationObject.class);
+                    // locationObject1.setFirstlatlong1(longc);
+                    if (locationObject1.getCount() == count) {
+                        //    locationObject1.setFirstlat(lat);
+                        name = locationObject1.getName();
+                        phone = locationObject1.getPhone();
+                        numbercar = locationObject1.getNumbercar();
+                        cartype = locationObject1.getTypecar();
+                        Caddress = locationObject1.getMyLocation();
+                        customerdestination = locationObject1.getAddrees();
+                        customerfirstlat = locationObject1.getFirstlat();
+                        customerfirstlong = locationObject1.getFirstlatlong1();
+                        customerlastlat = locationObject1.getLastlat();
+                        customerlastlong = locationObject1.getLastlong();
+
+                    }
+                }
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+    };
+
+    com.google.firebase.database.ValueEventListener VEL4 = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dS) {
+            if (dS.exists()) {
+                for(DataSnapshot data : dS.getChildren()) {
+
+                    graroffer1 = data.getValue(graroffer.class);
+                    if (graroffer1.getCount() == count) {
+                        name1 = graroffer1.getName();
+                        phone1 = graroffer1.getPhone();
+                        price = graroffer1.getPrice();
+                        arrivalTime = graroffer1.getArrivalTime();
+                        driverlat = graroffer1.getLat();
+                        driverlong = graroffer1.getLong1();
 
 
 
+                    }
+
+                }
+
+            }
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError databaseError) {
+        }
+
+    };
 
     public void opendialog() {
 
@@ -309,36 +345,12 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(this, "open curler", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        LatLng CFL = new LatLng(customerfirstlat, customerfirstlong);
-        LatLng CLL = new LatLng(customerlastlat, customerlastlong);
-        LatLng DFL = new LatLng(driverlat, driverlong);
-        if(type){
-            MarkerOptions mo1 = new MarkerOptions().position(CFL);
-            MarkerOptions mo2 = new MarkerOptions().position(CLL);
-            MarkerOptions mo3 = new MarkerOptions().position(DFL);
-
-            mMap.addMarker(new MarkerOptions().position(CFL).title("you are here "));
-            mMap.addMarker(new MarkerOptions().position(CLL).title("your castomer is here "));
-            mMap.addMarker(new MarkerOptions().position(DFL).title("customer destinatione "));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(CFL));
-            drue();
-
-        }else {
-            MarkerOptions mo1 = new MarkerOptions().position(CFL);
-            MarkerOptions mo2 = new MarkerOptions().position(CLL);
-            MarkerOptions mo3 = new MarkerOptions().position(DFL);
-
-            mMap.addMarker(new MarkerOptions().position(CLL).title("you are here "));
-            mMap.addMarker(new MarkerOptions().position(CFL).title("your driver is here "));
-            mMap.addMarker(new MarkerOptions().position(DFL).title("your  destinatione "));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(CFL));
-            drue();
-            
-            
-        }
-
+        Toast.makeText(this, "to open google map click on the left circle button", Toast.LENGTH_SHORT).show();
     }
+
+
 
     private void drue() {
         Polyline line = mMap.addPolyline(new PolylineOptions()
@@ -359,9 +371,77 @@ public class mapActivity extends FragmentActivity implements OnMapReadyCallback{
             startActivity(t);
             Toast.makeText(mapActivity.this, "The process is over", Toast.LENGTH_SHORT).show();
         }
-        GetLastLocation();
+        //GetLastLocation();
         onMapReady(mMap);
 
     }
 
+    public void lala(View view) {
+            shos();
+           // GetLastLocation();
+    }
+    public void shos() {
+        CFL = new LatLng(customerfirstlat, customerfirstlong);
+        CLL = new LatLng(customerlastlat, customerlastlong);
+        DFL = new LatLng(driverlat, driverlong);
+        if(type){
+//            MarkerOptions mo1 = new MarkerOptions().position(CFL);
+//            MarkerOptions mo2 = new MarkerOptions().position(CLL);
+//            MarkerOptions mo3 = new MarkerOptions().position(DFL);
+            c= mMap.addMarker(new MarkerOptions()
+                    .position(CFL)
+                    .title("your castomer is here"));
+            c.setTag(0);
+            d= mMap.addMarker(new MarkerOptions()
+                    .position(DFL)
+                    .title("you are here"));
+            d.setTag(0);
+
+            cl= mMap.addMarker(new MarkerOptions()
+                    .position(CLL)
+                    .title("customer destinatione"));
+            cl.setTag(0);
+
+
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(CFL));
+            drue();
+
+        }else {
+
+            c= mMap.addMarker(new MarkerOptions()
+                    .position(CFL)
+                    .title("you are here"));
+            c.setTag(0);
+            d= mMap.addMarker(new MarkerOptions()
+                    .position(DFL)
+                    .title("your driver is here"));
+            d.setTag(0);
+
+            cl= mMap.addMarker(new MarkerOptions()
+                    .position(CLL)
+                    .title("your  destinatione"));
+
+
+            cl.setTag(0);
+
+            drue();
+
+
+        }
+    }
+
+    public void finish(View view) {
+        if(type){
+             Intent t = new Intent(mapActivity.this, ManagerActivity.class);
+            startActivity(t);
+            Toast.makeText(this, "Thanks for using Get Grar", Toast.LENGTH_SHORT).show();
+
+        }else {
+            Intent t = new Intent(mapActivity.this, CustomerActivity.class);
+            startActivity(t);
+            Toast.makeText(this, "Thanks for using Get Grar", Toast.LENGTH_SHORT).show();
+
+
+        }
+    }
 }

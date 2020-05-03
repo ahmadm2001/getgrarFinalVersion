@@ -73,7 +73,7 @@ public class CustomerActivity extends AppCompatActivity {
     ProgressDialog pd;
     LinearLayout offerdialog;
     locationObject locationObject2;
-    String ahmad = "haha",Name1,Phone1,ArrivalTime,price;
+    String mylocation = "haha",Name1,Phone1,ArrivalTime,price;
    // Customer customer=new Customer();
     Manager yes;
     Boolean act=false;
@@ -161,7 +161,6 @@ public class CustomerActivity extends AppCompatActivity {
                 if (ActivityCompat.checkSelfPermission(CustomerActivity.this
                         , Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     //when permission grantrd
-                    Toast.makeText(CustomerActivity.this, " Double click please ", Toast.LENGTH_LONG).show();
 
                     getLocation();
                 } else {
@@ -330,11 +329,12 @@ public class CustomerActivity extends AppCompatActivity {
                 lo.setAct(false);
                 status = 2;
 
-                locationObject2 = new locationObject(ahmad, address1, UID, name
+                locationObject2 = new locationObject(mylocation, address1, UID, name
                         , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,false,count);
                 refLocations.child("" + count).setValue(locationObject2);
                 Toast.makeText(CustomerActivity.this, " Accepted", Toast.LENGTH_LONG).show();
-                intent = new Intent(CustomerActivity.this,HistoryActivity.class);
+                intent = new Intent(CustomerActivity.this,mapActivity.class);
+                intent.putExtra("count", locationObject2.getCount());
                 startActivity(intent);
             }
         });
@@ -348,7 +348,7 @@ public class CustomerActivity extends AppCompatActivity {
                  * @param	DialogInterface dialog, int which.
                  */
                 status = 0;
-                locationObject3 = new locationObject(ahmad, address1, UID, name
+                locationObject3 = new locationObject(mylocation, address1, UID, name
                         , numbercar, typecar, phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
 
 
@@ -368,9 +368,9 @@ public class CustomerActivity extends AppCompatActivity {
          *
          * @param view Button on click operate the action.
          */
-        ahmad = tv5.getText().toString();
+        mylocation = tv5.getText().toString();
        address1 = targetAddress.getText().toString();
-       if (!address1.equals("") && !ahmad.equals("")) {
+       if (!address1.equals("") && !mylocation.equals("")) {
            DatabaseReference mDatabaseRef = FirebaseDatabase.getInstance().getReference();
            mDatabaseRef.child("location").addListenerForSingleValueEvent(new ValueEventListener() {
                @Override
@@ -378,7 +378,7 @@ public class CustomerActivity extends AppCompatActivity {
                    if (dataSnapshot.exists()) {
                        count = dataSnapshot.getChildrenCount();
                        count = count + 1;
-                       locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                       locationObject1 = new locationObject(mylocation, address1, UID, name, numbercar, typecar
                                , phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
                        refLocations.child("" + count).setValue(locationObject1);
                        Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
@@ -389,7 +389,7 @@ public class CustomerActivity extends AppCompatActivity {
                        query.addValueEventListener(VEL);
                    } else {
                        count = 1;
-                       locationObject1 = new locationObject(ahmad, address1, UID, name, numbercar, typecar
+                       locationObject1 = new locationObject(mylocation, address1, UID, name, numbercar, typecar
                                , phone,status,firstlong1,firstlat,llat,long3,Duid,true, count);
                        refLocations.child("" + count).setValue(locationObject1);
                        Toast.makeText(CustomerActivity.this, locationObject1.getMyLocation(), Toast.LENGTH_SHORT).show();
@@ -456,7 +456,7 @@ public class CustomerActivity extends AppCompatActivity {
             t = new Intent(this, HistoryActivity.class);
             startActivity(t);
         }
-        if (s.equals("cridets")) {
+        if (s.equals("Credits")) {
             t = new Intent(this, CreditsActivity.class);
             startActivity(t);
         }

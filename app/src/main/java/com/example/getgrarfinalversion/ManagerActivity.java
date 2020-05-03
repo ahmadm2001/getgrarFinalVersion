@@ -359,7 +359,7 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
                     refLocations.child(""+lo.getCount()).setValue(lo);
                     Toast.makeText(ManagerActivity.this, " Accepted!", Toast.LENGTH_LONG).show();
                     pd.dismiss();
-                    intent = new Intent(ManagerActivity.this, HistoryActivity.class);
+                    intent = new Intent(ManagerActivity.this, mapActivity.class);
                     startActivity(intent);
                 } else {
                     if (lo.getStatus() == 0) {
@@ -405,7 +405,7 @@ public class ManagerActivity extends AppCompatActivity implements AdapterView.On
             t = new Intent(this, HistoryActivity.class);
             startActivity(t);
         }
-        if (s.equals("cridets")) {
+        if (s.equals("Credits")) {
             t = new Intent(this, CreditsActivity.class);
             startActivity(t);
         }
